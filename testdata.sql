@@ -2,7 +2,7 @@
 -- Run AFTER the app has started once, so Hibernate has created the tables.
 -- All accounts use the password: Password@123  (stored as BCrypt hashes)
 -- Titles/authors/publishers are real; ISBNs, page counts and prices are made-up sample values.
-
+CREATE DATABASE bookstoredb
 USE bookstoredb;
 SET NAMES utf8mb4;
 
