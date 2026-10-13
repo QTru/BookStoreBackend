@@ -42,6 +42,9 @@ public class Account {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+    @Builder.Default
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
     @Column(name = "creation_date", nullable = false, updatable = false)
     private LocalDateTime creationDate;
     @OneToMany(mappedBy = "account")
