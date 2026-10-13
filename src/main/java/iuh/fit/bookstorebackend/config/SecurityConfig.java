@@ -39,7 +39,21 @@ public class SecurityConfig {
                         "/api/categories",
                         "/api/categories/*"
                 ).permitAll()
-                .requestMatchers("/api/accounts/**").hasRole("ADMIN")
+                .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/accounts/me"
+                ).authenticated()
+                .requestMatchers(
+                        HttpMethod.PUT,
+                        "/api/accounts/me"
+                ).authenticated()
+                .requestMatchers(
+                        HttpMethod.DELETE,
+                        "/api/accounts/me"
+                ).authenticated()
+                .requestMatchers(
+                        "/api/accounts/**"
+                ).hasRole("ADMIN")
                 .requestMatchers(
                         "/api/books/**",
                         "/api/categories/**",

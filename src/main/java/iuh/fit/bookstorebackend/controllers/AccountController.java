@@ -5,6 +5,7 @@ import iuh.fit.bookstorebackend.dto.UpdateAccountRequest;
 import iuh.fit.bookstorebackend.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,9 +41,31 @@ public class AccountController {
                 accountService.updateInformation(id, request));
     }
 
+    @GetMapping("/me")
+    public AccountResponse getCurrentAccount(Authentication authentication){
+        return AccountResponse.from(
+                accountService.findByUsername(authentication.getName())
+        );
+    }
+
+    @PutMapping("/me")
+    public AccountResponse updateCurrentAccount(Authentication authentication, @Valid @RequestBody UpdateAccountRequest request){
+        return  AccountResponse.from(
+                accountService.updateCurrentAccount(authentication.getName(), request)
+        );
+    }
+
+    @GetMapping("/search")
+    public List<AccountResponse> search(@RequestParam String keyword) {
+        return accountService.search(keyword)
+                .stream()
+                .map(AccountResponse::from)
+                .toList();
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") String id) {
-        accountService.deleteById(id);
+        accountService.disableAccount(id);
     }
 }
