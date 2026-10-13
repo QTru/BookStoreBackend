@@ -1,7 +1,7 @@
 package iuh.fit.bookstorebackend.controllers;
 
-import iuh.fit.bookstorebackend.models.Cart;
 import iuh.fit.bookstorebackend.services.CartService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,25 +15,27 @@ public class CartController {
     }
 
     @GetMapping("/{accountId}")
-    public Cart getCart(@PathVariable String accountId) {
-        return cartService.getOrCreate(accountId);
+    public CartService.SessionCart getCart(@PathVariable String accountId, HttpSession session) {
+        return cartService.getCart(session);
     }
 
     @PostMapping("/{accountId}/items")
     @ResponseStatus(HttpStatus.CREATED)
-    public Cart addItem(@PathVariable String accountId, @RequestBody CartItemRequest request) {
-        return cartService.add(accountId, request.bookId(), request.quantity());
+    public CartService.SessionCart addItem(@PathVariable String accountId, @RequestBody CartItemRequest request,
+                                           HttpSession session) {
+        return cartService.add(request.bookId(), request.quantity(), session);
     }
 
     @PutMapping("/{accountId}/items/{bookId}")
-    public Cart updateItem(@PathVariable String accountId, @PathVariable String bookId,
-                           @RequestBody QuantityRequest request) {
-        return cartService.update(accountId, bookId, request.quantity());
+    public CartService.SessionCart updateItem(@PathVariable String accountId, @PathVariable String bookId,
+                           @RequestBody QuantityRequest request, HttpSession session) {
+        return cartService.update(bookId, request.quantity(), session);
     }
 
     @DeleteMapping("/{accountId}/items/{bookId}")
-    public Cart removeItem(@PathVariable String accountId, @PathVariable String bookId) {
-        return cartService.remove(accountId, bookId);
+    public CartService.SessionCart removeItem(@PathVariable String accountId, @PathVariable String bookId,
+                                              HttpSession session) {
+        return cartService.remove(bookId, session);
     }
 
     public record CartItemRequest(String bookId, int quantity) {}
